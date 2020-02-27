@@ -178,27 +178,34 @@ public class Utils {
         return Utils.NOTIFICATION_CHANNEL;
     }
 
-    public static String getSetupNotificationChannel(Context context) {
+      public static void createSetupNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                Utils.SETUP_NOTIFICATION_CHANNEL,
-                "Playback setup",
-                NotificationManager.IMPORTANCE_NONE
+                    Utils.SETUP_NOTIFICATION_CHANNEL,
+                    "Playback setup",
+                    NotificationManager.IMPORTANCE_NONE
             );
             channel.setShowBadge(false);
             channel.setSound(null, null);
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(channel);
         }
-        return Utils.SETUP_NOTIFICATION_CHANNEL;
     }
 
     public static Notification createBlankSetupNotification(Context context) {
-        String channel = getSetupNotificationChannel(context);
+        String channel = null;
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createSetupNotificationChannel(context);
+            channel = Utils.SETUP_NOTIFICATION_CHANNEL;
+        }
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channel);
         Notification notification = notificationBuilder.setPriority(NotificationManager.IMPORTANCE_MIN)
-            .setSmallIcon(R.drawable.play)
-            .setCategory(Notification.CATEGORY_SERVICE)
-            .build();
+                .setSmallIcon(R.drawable.play)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
         return notification;
     }
 }
