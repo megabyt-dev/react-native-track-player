@@ -114,8 +114,19 @@ public class MusicService extends HeadlessJsTaskService {
             return START_NOT_STICKY;
         }
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification notification = Utils.createBlankSetupNotification(this);
+            startForeground(1, notification);
+        } else {
+            startForeground(1, new Notification());
+        }
+        stopForeground(true);
+
+        manager = new MusicManager(this);
+        handler = new Handler();
+
         super.onStartCommand(intent, flags, startId);
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
