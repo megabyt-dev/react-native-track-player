@@ -200,7 +200,9 @@ public class Track {
                     DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
                     true
             );
-
+//            DefaultAllocator allocator = new DefaultAllocator(true, 5000);
+//            DefaultLoadControl loadControl = new DefaultLoadControl(allocator, 30000, 45000, 1500, 5000,);
+//            DefaultLoadControl loadControl = new DefaultLoadControl(allocator, 20000,45000,1000,1500,-1,true);
             if(headers != null) {
                 factory.getDefaultRequestProperties().set(headers);
             }
@@ -215,6 +217,7 @@ public class Track {
                         .createMediaSource(uri);
             case HLS:
                 return new HlsMediaSource.Factory(ds)
+                        .setAllowChunklessPreparation(true)
                         .createMediaSource(uri);
             case SMOOTH_STREAMING:
                 return new SsMediaSource.Factory(new DefaultSsChunkSource.Factory(ds), ds)
